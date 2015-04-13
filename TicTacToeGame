@@ -1,0 +1,173 @@
+import java.util.Arrays;
+import javax.swing.JOptionPane;
+import java.util.Scanner;
+
+public class TicTacToeGame {
+	private char[][] gameBoard;
+	private boolean gameOnGoing = true;
+	
+	public TicTacToeGame()
+	{
+		gameBoard = new char[3][3];
+		
+		for (int row=0; row < gameBoard.length; row ++)
+		{
+			Arrays.fill(gameBoard[row], ' ');
+		}
+	}
+	
+	// to see game broad
+	public void displayBoard()
+	{
+		for (int row=0; row < gameBoard.length; row++)
+		{
+			for (int col=0; col < gameBoard[0].length; col++)
+			{
+				System.out.print("\t" + gameBoard[row][col]);
+				if (col == 0 || col == 1)
+					System.out.print("|");
+			}
+			if (row == 0 || row == 1)
+				System.out.print("\n____________________________\n");
+		}
+		System.out.println();
+	}
+	
+	// Validate if a player move is allow
+	
+	public boolean makeMove(char player, int row, int col)
+	{
+		if (row >= 0 && row <=2 && col >=0 && col <= 2)
+		{	
+			if (gameBoard[row][col] != ' ')
+				return false;
+			else
+			{
+				gameBoard[row][col] = player;
+				return true;
+			}
+			
+		}
+	else
+		return false;
+	}
+	
+	// Check if anyone win the game
+	
+	public boolean gameRuning()
+	{
+		return gameOnGoing;
+	}
+	
+	// Ask user to pick a row and column
+	
+	public void askPlayer(char player)
+	{
+		Scanner input = new Scanner(System.in);
+		int row, col;
+		do
+		{
+			System.out.printf("Player %s please enter a row (1-3): ", player);
+			row = input.nextInt();
+			
+			System.out.printf("Player %s please enter a col (1-3): ", player);
+			col = input.nextInt();
+			
+		}
+		while (notValid(row,col));
+		makeMove(player,row-1,col-1);
+	}
+
+	
+	// will validate if the row and column are between 1-3
+	public boolean notValid(int row, int col)
+	{
+		if (row > 3 || row < 1 || col > 3 || col < 1 || !isEmpty(row, col))
+			return true;
+		else
+			return false;
+	}
+	
+	public boolean isEmpty(int row, int col)
+	{
+		if (gameBoard[row-1][col-1] == ' ')
+			return true;
+		else
+		{
+			System.out.print("That position is already taken.\n");
+			return false;
+		}
+	}
+	
+	// will check to see if a player win.
+	
+	public boolean checkWinner()
+	{
+		for (int row=0; row< gameBoard.length; row++)
+		{
+			if (gameBoard[row][0] == gameBoard[row][1] 
+					&& gameBoard[row][1] == gameBoard[row][2]
+							&& gameBoard[row][0] != ' ')
+			{
+				System.out.print("The winner is " + gameBoard[row][0]);
+				gameOnGoing = false;
+			}
+				
+		}
+		for (int col=0; col<gameBoard[0].length; col++)
+		{
+			if (gameBoard[0][col] == gameBoard[1][col] 
+					&& gameBoard[1][col] == gameBoard[2][col]
+							&& gameBoard[col][0] != ' ')
+			{
+				System.out.print("The winner is " + gameBoard[0][col]);
+				gameOnGoing = false;
+			}
+							
+		}
+		if (gameBoard [0][0] == gameBoard[1][1] 
+				&& gameBoard [1][1] == gameBoard[2][2] 
+						&& gameBoard[0][0] != ' ')
+		{
+			System.out.print("The winner is " + gameBoard[0][0]);
+			gameOnGoing = false;
+		}
+		
+		if (gameBoard [2][0] == gameBoard[1][1] 
+				&& gameBoard [1][1] == gameBoard[2][2] 
+						&& gameBoard[0][2] != ' ')
+		{
+			System.out.print("The winner is " + gameBoard[1][1]);
+			gameOnGoing = false;
+		}
+		return false;
+	}
+	
+	public static void main(String[] args) 
+	{
+		TicTacToeGame myGame =  new TicTacToeGame();
+		myGame.displayBoard();
+		
+		int counter = 1;
+		
+		while (myGame.gameRuning()&& counter < 10)
+		{
+			if (counter % 2 == 0)
+				myGame.askPlayer('O');
+			else
+				myGame.askPlayer('X');
+			counter++;
+			
+				System.out.println("\n");
+				myGame.displayBoard();
+				myGame.checkWinner();
+				
+				if (counter == 10)
+				{
+					System.out.print("State mate!\n");
+				}
+		}
+		
+	}
+
+}
